@@ -12,12 +12,9 @@ import plotly.express as px
 # ML libraries
 from xgboost import XGBRegressor
 from lightgbm import LGBMRegressor
-from catboost import CatBoostRegressor
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_percentage_error
 import zipfile
-import pandas as pd
-
 
 # ---------------------------
 # 1) Load & Preprocess Data
@@ -96,10 +93,10 @@ selected_optional_features = st.sidebar.multiselect(
 
 # 3.3) Model Selection
 st.sidebar.header("Model Selection")
-# Updated list: Random Forest and MLPRegressor are replaced with Extra Trees and Gradient Boosting.
+# Removed CatBoost option
 model_choice = st.sidebar.selectbox(
     "Select Model",
-    ["XGBoost", "Extra Trees", "LightGBM", "CatBoost", "Gradient Boosting"]
+    ["XGBoost", "Extra Trees", "LightGBM", "Gradient Boosting"]
 )
 
 # 3.4) Model Parameters with Plain-English Descriptions (each on separate lines)
@@ -156,21 +153,6 @@ elif model_choice == "LightGBM":
         "max_depth": st.sidebar.slider("Max Depth (-1 for no limit)", -1, 15, -1),
         "n_estimators": st.sidebar.slider("Number of Estimators", 50, 500, 100, step=10),
         "num_leaves": st.sidebar.slider("Num Leaves", 31, 255, 31)
-    }
-
-elif model_choice == "CatBoost":
-    st.sidebar.subheader("CatBoost Parameters")
-    st.sidebar.markdown(
-    """
-    **learning_rate**: Step size for each iteration. Too high and it may overshoot; too low and it learns slowly.  
-    **depth**: Depth of the tree. Higher depth captures more details but may overfit.  
-    **iterations**: Number of boosting iterations. More iterations can improve performance but take longer.
-    """
-    )
-    catboost_params = {
-        "learning_rate": st.sidebar.slider("Learning Rate", 0.01, 0.5, 0.1),
-        "depth": st.sidebar.slider("Depth", 3, 15, 6),
-        "iterations": st.sidebar.slider("Iterations", 50, 500, 100, step=10)
     }
 
 elif model_choice == "Gradient Boosting":
@@ -306,16 +288,7 @@ if st.sidebar.button("Train Model"):
             learning_rate=lightgbm_params["learning_rate"],
             max_depth=lightgbm_params["max_depth"],
             n_estimators=lightgbm_params["n_estimators"],
-            num_leaves=lightgbm_params["num_leaves"],
-            random_state=lightgbm_params["random_state"]
-        )
-    elif model_choice == "CatBoost":
-        model = CatBoostRegressor(
-            learning_rate=catboost_params["learning_rate"],
-            depth=catboost_params["depth"],
-            iterations=catboost_params["iterations"],
-            random_seed=catboost_params["random_seed"],
-            verbose=False
+            num_leaves=lightgbm_params["num_leaves"]
         )
     elif model_choice == "Gradient Boosting":
         model = GradientBoostingRegressor(
