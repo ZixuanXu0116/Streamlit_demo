@@ -304,7 +304,7 @@ if st.sidebar.button("Train Model"):
     
     # Evaluate on validation set
     y_val_pred = model.predict(X_val)
-    rmse_val = mean_squared_error(y_val, y_val_pred, squared=False)
+    rmse_val = mean_squared_error(y_val, y_val_pred) ** 0.5
     r2_val = r2_score(y_val, y_val_pred)
     mape_val = mean_absolute_percentage_error(y_val, y_val_pred) * 100.0
 
@@ -330,7 +330,7 @@ if st.sidebar.button("Train Model"):
     
     # Evaluate on test set
     y_test_pred = model.predict(X_test)
-    rmse_test = mean_squared_error(y_test, y_test_pred, squared=False)
+    rmse_test = mean_squared_error(y_test, y_test_pred) ** 0.5
     r2_test = r2_score(y_test, y_test_pred)
     mape_test = mean_absolute_percentage_error(y_test, y_test_pred) * 100.0
 
