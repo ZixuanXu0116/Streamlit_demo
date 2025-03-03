@@ -15,13 +15,19 @@ from lightgbm import LGBMRegressor
 from catboost import CatBoostRegressor
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_percentage_error
+import zipfile
+import pandas as pd
+
 
 # ---------------------------
 # 1) Load & Preprocess Data
 # ---------------------------
 @st.cache_data
 def load_data():
-    df = pd.read_parquet("BOSNYC_EDA_cleaned.parquet")
+    # Unzip the file
+    with zipfile.ZipFile("BOSNYC_EDA_cleaned.parquet.zip", "r") as zip_ref:
+        zip_ref.extractall("extracted_data")
+    df = pd.read_parquet("extracted_data/BOSNYC_EDA_cleaned.parquet")
     df['shop_date'] = pd.to_datetime(df['shop_date'])
     df['depdate'] = pd.to_datetime(df['depdate'])
     return df
